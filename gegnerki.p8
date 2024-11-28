@@ -1,3 +1,7 @@
+pico-8 cartridge // http://www.pico-8.com
+version 1
+__lua__
+
 -- Spielvariablen
 player = {x = 64, y = 64, sprite = 1}
 enemy = {
