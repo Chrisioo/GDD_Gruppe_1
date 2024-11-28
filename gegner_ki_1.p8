@@ -1,5 +1,5 @@
 pico-8 cartridge // http://www.pico-8.com
-version 42
+version 1
 __lua__
 
 player = {
@@ -14,20 +14,12 @@ enemy = {
     sprite = 2,
     speed = 1}
 
-obstacle = {
-    x = 64,
-    y = 64,
-    sprite = 3,
-    solid = true
-}
-
 game_over = false
 
 function _draw()
     cls(11)
     spr(player.sprite, player.x, player.y)
     spr(enemy.sprite, enemy.x, enemy.y)
-    spr(obstacle.sprite, obstacle.x, obstacle.y)
 
     if game_over then 
         print("game over", 32, 60, 1)
@@ -37,17 +29,18 @@ end
 
 
 function _init()
-    
+
 end
 
-function _update() 
+function _update60() 
     if not game_over then
         if btn(0) then player.x = player.x - player.speed end
         if btn(1) then player.x = player.x + player.speed end
         if btn(2) then player.y = player.y - player.speed end
         if btn(3) then player.y = player.y + player.speed end
 
-        _enemy_random_movement()
+        --_enemy_random_movement()
+        _enemy_follow_player()
 
         if (player.x < 0 or player.x > 127) then
             player.x = (player.x + 127) % 128
@@ -70,15 +63,23 @@ function _obstacle_collision(x1, x2, y1, y2)
     return abs(x1 - x2) < 8 and abs(y1 - y2) < 8
 end
 
-function _enemy_random_movement()
-    enemy.x = enemy.x + (rnd(3) - 1) * enemy.speed
-    enemy.y = enemy.y + (rnd(3) - 1) * enemy.speed
-    if (enemy.x < 0 or enemy.x > 127) then
-        enemy.x = (enemy.x + 127) % 128
-    end
-    if (enemy.y < 0 or enemy.y > 127) then
-        enemy.y = (enemy.y + 127) % 128
-    end
+--function _enemy_random_movement()
+--    enemy.x = enemy.x + (rnd(3) - 1) * enemy.speed
+--    enemy.y = enemy.y + (rnd(3) - 1) * enemy.speed
+--    if (enemy.x < 0 or enemy.x > 127) then
+--        enemy.x = (enemy.x + 127) % 128
+--    end
+--    if (enemy.y < 0 or enemy.y > 127) then
+--        enemy.y = (enemy.y + 127) % 128
+--    end
+--end
+
+function _enemy_follow_player()
+    local dx = player.x - enemy.x
+    local dy = player.y - enemy.y
+    local dist = sqrt(dx^2 + dy^2)
+    enemy.x = enemy.x + (dx / dist) * enemy.speed
+    enemy.y = enemy.y + (dy / dist) * enemy.speed
 end
 
 __gfx__
