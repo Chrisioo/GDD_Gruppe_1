@@ -1,5 +1,5 @@
 pico-8 cartridge // http://www.pico-8.com
-version 1
+version 42
 __lua__
 
 -- Spielvariablen
@@ -32,17 +32,17 @@ function _update()
 
         -- Gegnerverhalten
         if enemy.state == "neutral" then
-            -- Zufällige Bewegung
+            -- Zufれさllige Bewegung
             enemy.x = enemy.x + (rnd(2) - 1) * enemy.speed
             enemy.y = enemy.y + (rnd(2) - 1) * enemy.speed
 
             -- Sichtfeldrotation
             enemy.angle = (enemy.angle + 2) % 360
 
-            -- Überprüfung, ob der Spieler im Sichtfeld ist
+            -- れうberprれもfung, ob der Spieler im Sichtfeld ist
             if check_sight() then
                 enemy.state = "chasing"
-                enemy.sprite = 3 -- Ändere das Sprite
+                enemy.sprite = 3 -- れ░ndere das Sprite
             end
         elseif enemy.state == "chasing" then
             -- Verfolge den Spieler
@@ -53,7 +53,7 @@ function _update()
             enemy.y = enemy.y + (dy / dist) * enemy.speed * 1.5
         end
 
-        -- Überprüfung auf Kollision
+        -- れうberprれもfung auf Kollision
         if collide(player.x, player.y, enemy.x, enemy.y) then
             game_over = true
         end
@@ -96,7 +96,7 @@ function check_sight()
     local ex = sx + cos(angle_rad) * sight_length
     local ey = sy + sin(angle_rad) * sight_length
 
-    -- Prüfe auf Schnittpunkt mit dem Spieler
+    -- Prれもfe auf Schnittpunkt mit dem Spieler
     return line_intersect(sx, sy, ex, ey, player.x, player.y, player.x + 8, player.y + 8)
 end
 
@@ -110,6 +110,15 @@ function line_intersect(x1,y1,x2,y2,x3,y3,x4,y4)
 end
 
 function collide(x1, y1, x2, y2)
-    -- Einfache Kollisionsüberprüfung
+    -- Einfache Kollisionsれもberprれもfung
     return abs(x1 - x2) < 8 and abs(y1 - y2) < 8
 end
+__gfx__
+00000000444444449999999966666666000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000400000409009900960006666000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000400000400999999960660666000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000400000440990999060600666000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000440000040990990060066066000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000040000040990990066006666000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000040000040999900066666666000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000044444440099000066666666000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000

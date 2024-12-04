@@ -12,7 +12,7 @@ enemy = {
     x = 32,
     y = 32,
     sprite = 2,
-    speed = 1}
+    speed = 0.5}
 
 game_over = false
 
@@ -22,7 +22,7 @@ function _draw()
     spr(enemy.sprite, enemy.x, enemy.y)
 
     if game_over then 
-        print("game over", 32, 60, 1)
+        print("game over!", 32, 60, 1)
     end
 end
 
@@ -78,8 +78,8 @@ function _enemy_follow_player()
     local dx = player.x - enemy.x
     local dy = player.y - enemy.y
     local dist = sqrt(dx^2 + dy^2)
-    enemy.x = enemy.x + (dx / dist) * enemy.speed
-    enemy.y = enemy.y + (dy / dist) * enemy.speed
+    enemy.x = enemy.x + (dx / dist) * enemy.speed * 1.5
+    enemy.y = enemy.y + (dy / dist) * enemy.speed * 1.5
 end
 
 __gfx__
