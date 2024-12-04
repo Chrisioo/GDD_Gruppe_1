@@ -15,14 +15,19 @@ enemy = {
     speed = 0.5}
 
 game_over = false
+game_over_timer = 0
 
 function _draw()
     cls(11)
     spr(player.sprite, player.x, player.y)
     spr(enemy.sprite, enemy.x, enemy.y)
-
-    if game_over then 
+    
+    if not game_over then
+        print("timer: " .. time(), 2, 2, 1)
+        game_over_timer = time()
+    else
         print("game over!", 32, 60, 1)
+        print("timer: " .. game_over_timer, 2, 2, 1)
     end
 end
 
@@ -39,7 +44,6 @@ function _update60()
         if btn(2) then player.y = player.y - player.speed end
         if btn(3) then player.y = player.y + player.speed end
 
-        --_enemy_random_movement()
         _enemy_follow_player()
 
         if (player.x < 0 or player.x > 127) then
@@ -62,17 +66,6 @@ end
 function _obstacle_collision(x1, x2, y1, y2)
     return abs(x1 - x2) < 8 and abs(y1 - y2) < 8
 end
-
---function _enemy_random_movement()
---    enemy.x = enemy.x + (rnd(3) - 1) * enemy.speed
---    enemy.y = enemy.y + (rnd(3) - 1) * enemy.speed
---    if (enemy.x < 0 or enemy.x > 127) then
---        enemy.x = (enemy.x + 127) % 128
---    end
---    if (enemy.y < 0 or enemy.y > 127) then
---        enemy.y = (enemy.y + 127) % 128
---    end
---end
 
 function _enemy_follow_player()
     local dx = player.x - enemy.x
