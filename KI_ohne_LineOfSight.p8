@@ -46,11 +46,17 @@ function _update60()
 
         _enemy_follow_player()
 
-        if (player.x < 0 or player.x > 127) then
+        if (player.x < 0) then
             player.x = (player.x + 127) % 128
         end
-        if (player.y < 0 or player.y > 127) then
+        if (player.x > 127) then
+            player.x = player.x % 128
+        end
+        if (player.y < 0) then
             player.y = (player.y + 127) % 128
+        end
+        if (player.y > 127) then
+            player.y = player.y % 128
         end
     end
 
