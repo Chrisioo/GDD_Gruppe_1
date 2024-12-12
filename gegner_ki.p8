@@ -43,7 +43,7 @@ function _update60 ()
     if (collision(player.x, enemy.x, player.y, enemy.y)) then               -- Methode fuer Kollision zwischen Spieler und Gegner
         game_over = true                                                    -- Spiel vorbei, falls Kollision zwischen Spieler und Gegner stattfindet
     end
-    if (enemy.state == "neutral" and game_over == false) then               -- Check, ob Gegner im neutralen Zustand ist
+    if (enemy.state == "neutral") then                                      -- Check, ob Gegner im neutralen Zustand ist
         enemy_random_movement()                                             -- Solange Gegner neutral ist, bewegt er sich zufaellig
         scan_for_player()                                                   -- Solange Gegner neutral ist, scannt er nach Spieler
     elseif (enemy.state == "chasing" and game_over == false) then           -- Check, ob Gegner im Verfolgungsmodus ist
@@ -129,15 +129,9 @@ function scan_for_player()
         if collision(check_x, player.x, check_y, player.y) then             -- Wenn Kollision zwischen gescannter Koordinate und Spieler stattfindet
             enemy.state = "chasing"                                         -- Setze Gegner in Verfolgungsmodus                         
             enemy.sprite = 3                                                -- Aendere Sprite des Gegners  
-            delete_line()      
             break                                                           -- Beende Schleife
         end
     end
-end
-
-function delete_line()
-    enemy.line_x = 0
-    enemy.line_y = 0
 end
 
 -- Funktionen fuer Kollision mit Kartenrand

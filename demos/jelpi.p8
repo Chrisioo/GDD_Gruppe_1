@@ -1493,9 +1493,12 @@ function turn_to(a,ta,spd)
 	a %=1 
 	ta%=1
 	
-	while (ta < a-.5) ta += 1
-	while (ta > a+.5) ta -= 1
-	
+	while (ta < a-.5) do
+	 	ta += 1
+	end
+	while (ta > a+.5) do
+		ta -= 1
+	end
 	if (ta > a) then
 		a = min(ta, a + spd)
 	else
