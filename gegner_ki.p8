@@ -2,7 +2,7 @@ pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
 
--- Entity Spieler, setzt sich aus x und y Koordinaten sowie Sprite und Geschwindigkeit zusammen
+-- Spieler, setzt sich aus x und y Koordinaten sowie Sprite und Geschwindigkeit zusammen
 player = {
     x = 96, 
     y = 96, 
@@ -10,8 +10,8 @@ player = {
     speed = 1
 }
 
--- Entity Gegner, setzt sich aus x und y Koordinaten sowie Sprite und Geschwindigkeit zusammen
--- Zusaetzlich hat der Gegner einen Status und einen Winkel
+-- Gegner, setzt sich aus x und y Koordinaten sowie Sprite und Geschwindigkeit zusammen
+-- Zusaetzlich hat Gegner einen Status und einen Sichtwinkel
 enemy = {
     x = 32,
     y = 32,
@@ -54,11 +54,11 @@ end
 -- Draw Funktion, wird mit jedem Frame aufgerufen
 -- _draw: Zeichnet die Spielwelt und die Entities
 function _draw()
-    cls(7)                                                                  -- Hintergrundfarbe, 5 = grau                   
+    cls(7)                                                                  -- Hintergrundfarbe, 7 = weiß            
     spr(player.sprite, player.x, player.y)                                  -- Zeichnet Spieler an Position x und y mit Sprite 1
     spr(enemy.sprite, enemy.x, enemy.y)                                     -- Zeichnet Gegner an Position x und y mit Sprite 2      
     if (enemy.state == "neutral") then                                      -- Wenn Gegner im neutralen Zustand ist
-        line(enemy.x + 4, enemy.y + 4, enemy.line_x, enemy.line_y, 4)       -- Zeichnet Linie, in der nach Spieler gescannt wird, in Farbe 4 (orange)
+        line(enemy.x + 4, enemy.y + 4, enemy.line_x, enemy.line_y, 9)       -- Zeichnet Linie, in der nach Spieler gescannt wird, in Farbe 4 (orange)
     end
 
     if (not game_over) then                                                 -- Wenn Spiel nicht vorbei ist, zeige Timer        
@@ -101,13 +101,13 @@ end
 -- Funktion fuer zufaellige Bewegung des Gegners
 -- Wird genutzt, wenn Gegner im Modus "neutral" ist
 function enemy_random_movement()
-    local rnd_dir = rnd(1)                                                  -- Zufällige Richtung, in die sich der Gegner bewegt
+    local rnd_dir = rnd(1)                                                  -- Zufれさllige Richtung, in die sich der Gegner bewegt
     local enemy_dir_x = 0                                                   -- Richtung des Gegners in x-Richtung
     local enemy_dir_y = 0                                                   -- Richtung des Gegners in y-Richtung
-    if (rnd_dir > 0.5) then                                                 -- Wenn zufällige Richtung größer als 0.5 ist
-        enemy_dir_x = rnd({-1, 1})                                          -- Zufällige Richtung in x-Richtung (-1 oder 1)
+    if (rnd_dir > 0.5) then                                                 -- Wenn zufれさllige Richtung grれへれかer als 0.5 ist
+        enemy_dir_x = rnd({-1, 1})                                          -- Zufれさllige Richtung in x-Richtung (-1 oder 1)
     else
-        enemy_dir_y = rnd({-1, 1})                                          -- Zufällige Richtung in y-Richtung (-1 oder 1)
+        enemy_dir_y = rnd({-1, 1})                                          -- Zufれさllige Richtung in y-Richtung (-1 oder 1)
     end
     enemy.x = enemy.x + enemy_dir_x * enemy.speed                           -- Bewegung des Gegners in x-Richtung
     enemy.y = enemy.y + enemy_dir_y * enemy.speed                           -- Bewegung des Gegners in y-Richtung
@@ -144,11 +144,11 @@ function map_borders ()
 end
 
 __gfx__
-0000000000aaaa000004400000088000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-000000000aaaaaa00444444008888880000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000aa5aa5aa4444444488888888000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000aaaaaaaa4474474488788788000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000aaaaaaaa4444444488888888000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000aaa55aaa4444444488877888000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-000000000aaaaaa04477774488788788000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-0000000000aaaa004444444488888888000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000aaaa000009900000088000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+000000000aaaaaa00999999008888880000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000aa5aa5aa9999999988888888000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000aaaaaaaa9979979988788788000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000aaaaaaaa9999999988888888000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000aaa55aaa9999999988877888000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+000000000aaaaaa09977779988788788000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000aaaa009999999988888888000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
