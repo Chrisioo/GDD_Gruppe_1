@@ -29,7 +29,7 @@ local game_over = false
 -- game_over_timer: Zeit, die bis zum Game Over vergangen ist
 local game_over_timer = 0
 
--- Initialisierung
+-- Initialisierung, hier keine Funktionen
 function _init () 
 
 end 
@@ -39,9 +39,8 @@ end
 -- Hier wird die Bewegung des Spielers und des Gegners sowie die Kollision und der Status des Gegners ueberprueft
 function _update60 () 
     player_movement()                                                       -- Methode fuer Spielerbewegung
-    player_map_borders()                                                    -- Methode fuer Spielerkollision mit Kartenrand
-    enemy_map_borders()                                                     -- Methode fuer Gegnerkollision mit Kartenrand    
-    if (enemy_collision(player.x, enemy.x, player.y, enemy.y)) then         -- Methode fuer Kollision zwischen Spieler und Gegner
+    map_borders()                                                           -- Methode fuer Spieler-/Gegnerkollision mit Kartenrand
+    if (collision(player.x, enemy.x, player.y, enemy.y)) then               -- Methode fuer Kollision zwischen Spieler und Gegner
         game_over = true                                                    -- Spiel vorbei, falls Kollision zwischen Spieler und Gegner stattfindet
     end
     if (enemy.state == "neutral" and game_over == false) then               -- Check, ob Gegner im neutralen Zustand ist
@@ -55,7 +54,7 @@ end
 -- Draw Funktion, wird mit jedem Frame aufgerufen
 -- _draw: Zeichnet die Spielwelt und die Entities
 function _draw()
-    cls(5)                                                                  -- Hintergrundfarbe, 5 = grau                   
+    cls(7)                                                                  -- Hintergrundfarbe, 5 = grau                   
     spr(player.sprite, player.x, player.y)                                  -- Zeichnet Spieler an Position x und y mit Sprite 1
     spr(enemy.sprite, enemy.x, enemy.y)                                     -- Zeichnet Gegner an Position x und y mit Sprite 2      
     if (enemy.state == "neutral") then                                      -- Wenn Gegner im neutralen Zustand ist
@@ -84,7 +83,7 @@ end
 
 -- Funktion fuer Kollision zwischen Spieler und Gegner
 -- Kollision findet statt, wenn Abstand zwischen Spieler und Gegner kleiner als 8 ist
-function enemy_collision (x1, x2, y1, y2)   
+function collision (x1, x2, y1, y2)   
     return abs(x1 - x2) < 8 and abs(y1 - y2) < 8                            -- Kollision, wenn Abstand zwischen Spieler und Gegner kleiner als 8  
                                                                             -- In diesem Fall beruehren sich die Sprites, gibt true zurueck
 end
@@ -102,16 +101,13 @@ end
 -- Funktion fuer zufaellige Bewegung des Gegners
 -- Wird genutzt, wenn Gegner im Modus "neutral" ist
 function enemy_random_movement()
-    local enemy_dir_x = 0                                                   -- Richtung des Gegners in x-Richtung           
-    local enemy_dir_y = 0                                                   -- Richtung des Gegners in y-Richtung  
-    local enemy_move_timer = 0                                              -- Timer fuer Bewegung des Gegners
-    local enemy_change_interval = 1                                         -- Intervall fuer Richtungsaenderung des Gegners
-
-    enemy_move_timer = enemy_move_timer - (1/60)                            -- Timer fuer Bewegung des Gegners, wird bei jedem Frame aktualisiert
-    if (enemy_move_timer <= 0) then                                         -- Wenn Timer abgelaufen ist, aendere Richtung des Gegners
-        enemy_move_timer = enemy_change_interval                            -- Setze Timer auf Intervall fuer Richtungsaenderung
-        enemy_dir_x = rnd({-1, 0, 1})                                       -- Zufaellige Richtung in x-Richtung
-        enemy_dir_y = rnd({-1, 0, 1})                                       -- Zufaellige Richtung in y-Richtung
+    local rnd_dir = rnd(1)                                                  -- Zufällige Richtung, in die sich der Gegner bewegt
+    local enemy_dir_x = 0                                                   -- Richtung des Gegners in x-Richtung
+    local enemy_dir_y = 0                                                   -- Richtung des Gegners in y-Richtung
+    if (rnd_dir > 0.5) then                                                 -- Wenn zufällige Richtung größer als 0.5 ist
+        enemy_dir_x = rnd({-1, 1})                                          -- Zufällige Richtung in x-Richtung (-1 oder 1)
+    else
+        enemy_dir_y = rnd({-1, 1})                                          -- Zufällige Richtung in y-Richtung (-1 oder 1)
     end
     enemy.x = enemy.x + enemy_dir_x * enemy.speed                           -- Bewegung des Gegners in x-Richtung
     enemy.y = enemy.y + enemy_dir_y * enemy.speed                           -- Bewegung des Gegners in y-Richtung
@@ -121,16 +117,16 @@ end
 -- Wird genutzt, wenn Gegner im Modus "neutral" ist
 -- Scannt in einer Linie nach Spieler
 function scan_for_player()
-    local line_length = 50                                                  -- Laenge der Linie, in der nach Spieler gescannt wird in Pixel         
+    local line_length = 40                                                  -- Laenge der Linie, in der nach Spieler gescannt wird in Pixel         
     enemy.line_x = mid(0, enemy.x + cos(enemy.angle) * line_length, 127)    -- x-Koordinate der Linie, in der nach Spieler gescannt wird
     enemy.line_y = mid(0, enemy.y + sin(enemy.angle) * line_length, 127)    -- y-Koordinate der Linie, in der nach Spieler gescannt wird
 
-    enemy.angle = (enemy.angle + 0.05) % 1                                  -- Winkel, in dem gescannt wird, wird bei jedem Frame aktualisiert        
+    enemy.angle = enemy.angle + 0.01                                        -- Winkel, in dem gescannt wird, wird bei jedem Frame aktualisiert        
 
     for i = 0, line_length do                                               -- Schleife, die die Linie in der nach Spieler gescannt wird, durchlaeuft
         local check_x = mid(0, enemy.x + cos(enemy.angle) * i, 127)         -- x-Koordinate, die gescannt wird
         local check_y = mid(0, enemy.y + sin(enemy.angle) * i, 127)         -- y-Koordinate, die gescannt wird
-        if enemy_collision(check_x, player.x, check_y, player.y) then       -- Wenn Kollision zwischen gescannter Koordinate und Spieler stattfindet
+        if collision(check_x, player.x, check_y, player.y) then             -- Wenn Kollision zwischen gescannter Koordinate und Spieler stattfindet
             enemy.state = "chasing"                                         -- Setze Gegner in Verfolgungsmodus                         
             enemy.sprite = 3                                                -- Aendere Sprite des Gegners  
             delete_line()      
@@ -146,37 +142,11 @@ end
 
 -- Funktionen fuer Kollision mit Kartenrand
 -- Spieler und Gegner koennen sich nicht ueber den Kartenrand hinaus bewegen
-
--- Funktion fuer Spieler
-function player_map_borders () 
-    if (player.x < 0) then                                                  -- Wenn Spieler ueber Kartenrand hinaus bewegt (hier links)        
-        player.x = 0                                                        -- Setze Spieler auf Kartenrand             
-    end
-    if (player.x > 120) then
-        player.x = 120
-    end
-    if (player.y < 0) then
-        player.y = 0
-    end
-    if (player.y > 120) then
-        player.y = 120
-    end
-end
-
--- Funktion fuer Gegner
-function enemy_map_borders () 
-    if (enemy.x < 0) then                                                   -- Wenn Gegner ueber Kartenrand hinaus bewegt (hier links)  
-        enemy.x = 0                                                         -- Setze Gegner auf Kartenrand           
-    end
-    if (enemy.x > 120) then
-        enemy.x = 120
-    end
-    if (enemy.y < 0) then
-        enemy.y = 0
-    end
-    if (enemy.y > 120) then
-        enemy.y = 120
-    end
+function map_borders () 
+    player.x = mid(0, player.x, 120)                                       
+    player.y = mid(0, player.y, 120)                                       
+    enemy.x = mid(0, enemy.x, 120)                                         
+    enemy.y = mid(0, enemy.y, 120)                                         
 end
 
 __gfx__
