@@ -2,27 +2,6 @@ pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
 
--- Spieler, setzt sich aus x und y Koordinaten sowie Sprite und Geschwindigkeit zusammen
-player = {
-    x = 96, 
-    y = 96, 
-    sprite = 1,
-    speed = 1
-}
-
--- Gegner, setzt sich aus x und y Koordinaten sowie Sprite und Geschwindigkeit zusammen
--- Zusaetzlich hat Gegner einen Status und einen Sichtwinkel
-enemy = {
-    x = 32,
-    y = 32,
-    state = "neutral",
-    angle = 0,
-    line_x = 0,
-    line_y = 0,
-    sprite = 2,
-    speed = 1
-}
-
 -- Variablen fuer Game Over
 -- game_over: Status, zeigt an ob das Spiel vorbei ist
 local game_over = false
@@ -31,7 +10,26 @@ local game_over_timer = 0
 
 -- Initialisierung, hier keine Funktionen
 function _init () 
+    -- Spieler, setzt sich aus x und y Koordinaten sowie Sprite und Geschwindigkeit zusammen
+    player = {
+        x = 96, 
+        y = 96, 
+        sprite = 1,
+        speed = 1
+    }
 
+    -- Gegner, setzt sich aus x und y Koordinaten sowie Sprite und Geschwindigkeit zusammen
+    -- Zusaetzlich hat Gegner einen Status und einen Sichtwinkel
+    enemy = {
+        x = 32,
+        y = 32,
+        state = "neutral",
+        angle = 0,
+        line_x = 0,
+        line_y = 0,
+        sprite = 2,
+        speed = 1
+    }
 end 
 
 -- Update Funktion, wird mit jedem Frame aufgerufen
@@ -39,7 +37,8 @@ end
 -- Hier wird die Bewegung des Spielers und des Gegners sowie die Kollision und der Status des Gegners ueberprueft
 function _update60 () 
     player_movement()                                                       -- Methode fuer Spielerbewegung
-    map_borders()                                                           -- Methode fuer Spieler-/Gegnerkollision mit Kartenrand
+    --map_borders()                                                         -- Methode fuer Spieler-/Gegnerkollision mit Kartenrand
+    map_borders_teleport()                                                  -- Alternative Methode zur Kollision mit Kartenrand, teleportiert Spieler/Gegener an auf andere Seite der Karte
     if (collision(player.x, enemy.x, player.y, enemy.y)) then               -- Methode fuer Kollision zwischen Spieler und Gegner
         game_over = true                                                    -- Spiel vorbei, falls Kollision zwischen Spieler und Gegner stattfindet
     end
@@ -54,7 +53,7 @@ end
 -- Draw Funktion, wird mit jedem Frame aufgerufen
 -- _draw: Zeichnet die Spielwelt und die Entities
 function _draw()
-    cls(7)                                                                  -- Hintergrundfarbe, 7 = weiß            
+    cls(7)                                                                  -- Hintergrundfarbe, 7 = weiれか            
     spr(player.sprite, player.x, player.y)                                  -- Zeichnet Spieler an Position x und y mit Sprite 1
     spr(enemy.sprite, enemy.x, enemy.y)                                     -- Zeichnet Gegner an Position x und y mit Sprite 2      
     if (enemy.state == "neutral") then                                      -- Wenn Gegner im neutralen Zustand ist
@@ -101,13 +100,13 @@ end
 -- Funktion fuer zufaellige Bewegung des Gegners
 -- Wird genutzt, wenn Gegner im Modus "neutral" ist
 function enemy_random_movement()
-    local rnd_dir = rnd(1)                                                  -- Zufれさllige Richtung, in die sich der Gegner bewegt
+    local rnd_dir = rnd(1)                                                  -- Zufaellige Richtung, in die sich der Gegner bewegt
     local enemy_dir_x = 0                                                   -- Richtung des Gegners in x-Richtung
     local enemy_dir_y = 0                                                   -- Richtung des Gegners in y-Richtung
-    if (rnd_dir > 0.5) then                                                 -- Wenn zufれさllige Richtung grれへれかer als 0.5 ist
-        enemy_dir_x = rnd({-1, 1})                                          -- Zufれさllige Richtung in x-Richtung (-1 oder 1)
+    if (rnd_dir > 0.5) then                                                 -- Wenn zufaellige Richtung grれへれかer als 0.5 ist
+        enemy_dir_x = rnd({-1, 1})                                          -- Zufaellige Richtung in x-Richtung (-1 oder 1)
     else
-        enemy_dir_y = rnd({-1, 1})                                          -- Zufれさllige Richtung in y-Richtung (-1 oder 1)
+        enemy_dir_y = rnd({-1, 1})                                          -- Zufaellige Richtung in y-Richtung (-1 oder 1)
     end
     enemy.x = enemy.x + enemy_dir_x * enemy.speed                           -- Bewegung des Gegners in x-Richtung
     enemy.y = enemy.y + enemy_dir_y * enemy.speed                           -- Bewegung des Gegners in y-Richtung
@@ -141,6 +140,34 @@ function map_borders ()
     player.y = mid(0, player.y, 120)                                       
     enemy.x = mid(0, enemy.x, 120)                                         
     enemy.y = mid(0, enemy.y, 120)                                         
+end
+
+function map_borders_teleport()
+    if (player.x < 0) then
+        player.x = 120
+        enemy.state = "neutral" 
+        enemy.sprite = 2
+    end
+    if (player.x > 120) then
+        player.x = 0
+        enemy.state = "neutral"
+        enemy.sprite = 2
+    end
+    if (player.y < 0) then
+        player.y = 120
+        enemy.state = "neutral"
+        enemy.sprite = 2
+    end
+    if (player.y > 120) then
+        player.y = 0
+        enemy.state = "neutral"
+        enemy.sprite = 2
+    end
+
+    if (enemy.x < 0) then enemy.x = 120 end
+    if (enemy.x > 120) then enemy.x = 0 end
+    if (enemy.y < 0) then enemy.y = 120 end
+    if (enemy.y > 120) then enemy.y = 0 end
 end
 
 __gfx__
