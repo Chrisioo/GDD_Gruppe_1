@@ -37,7 +37,7 @@ end
 -- Hier wird die Bewegung des Spielers und des Gegners sowie die Kollision und der Status des Gegners ueberprueft
 function _update60 () 
     player_movement()                                                       -- Methode fuer Spielerbewegung
-    map_borders()                                                         -- Methode fuer Spieler-/Gegnerkollision mit Kartenrand
+    map_borders_teleport()                                                  -- Alternative Methode zur Kollision mit Kartenrand, teleportiert Spieler/Gegener an auf andere Seite der Karte
     if (collision(player.x, enemy.x, player.y, enemy.y)) then               -- Methode fuer Kollision zwischen Spieler und Gegner
         game_over = true                                                    -- Spiel vorbei, falls Kollision zwischen Spieler und Gegner stattfindet
     end
@@ -133,12 +133,34 @@ function scan_for_player()
 end
 
 -- Funktionen fuer Kollision mit Kartenrand
--- Spieler und Gegner koennen sich nicht ueber den Kartenrand hinaus bewegen
-function map_borders () 
-    player.x = mid(0, player.x, 120)                                       
-    player.y = mid(0, player.y, 120)                                       
-    enemy.x = mid(0, enemy.x, 120)                                         
-    enemy.y = mid(0, enemy.y, 120)                                         
+-- Gegner und Spieler werden bei Überschreiten des Randes an andere Seite der Karte "teleportiert"
+-- Beis Spielerteleportation setzt dies den Status des Gegners wieder auf neutral
+function map_borders_teleport()
+    if (player.x < 0) then
+        player.x = 120
+        enemy.state = "neutral" 
+        enemy.sprite = 2
+    end
+    if (player.x > 120) then
+        player.x = 0
+        enemy.state = "neutral"
+        enemy.sprite = 2
+    end
+    if (player.y < 0) then
+        player.y = 120
+        enemy.state = "neutral"
+        enemy.sprite = 2
+    end
+    if (player.y > 120) then
+        player.y = 0
+        enemy.state = "neutral"
+        enemy.sprite = 2
+    end
+
+    if (enemy.x < 0) then enemy.x = 120 end
+    if (enemy.x > 120) then enemy.x = 0 end
+    if (enemy.y < 0) then enemy.y = 120 end
+    if (enemy.y > 120) then enemy.y = 0 end
 end
 
 __gfx__
