@@ -2,19 +2,88 @@ pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
 
+-- Hauptmenue
+
+menu_options = {"start", "exit"}
+selected_option = 1
+current_state = "menu"
+
+function _init()
+    current_state = "menu"
+    selected_option = 1
+end
+
+function _update()
+    if current_state == "menu" then
+        handle_menu_input()
+    elseif current_state == "game" then
+        handle_game_input()
+    elseif current_state == "exit" then
+        -- Kein Input im Exit-Screen
+    end
+end    
+
+function _draw()
+    cls()
+    if current_state == "menu" then
+        draw_menu()
+    elseif current_state == "game" then
+        draw_game()
+    elseif current_state == "exit" then
+        draw_exit_screen()
+    end
+end
+
+function handle_menu_input()
+    if btnp(2) then -- up
+        selected_option -= 1
+        if selected_option < 1 then
+            selected_option = #menu_options
+        end
+    elseif btnp(3) then -- down
+        selected_option += 1
+        if selected_option > #menu_options then
+            selected_option = 1
+        end
+    elseif btnp(1) then -- enter
+        if selected_option == 1 then
+            current_state = "game"
+        elseif selected_option == 2 then
+            current_state = "exit"
+        end
+    end
+end
+
+function draw_menu()
+    print("Hauptmenue", 60, 40, 7)
+    for i, option in ipairs(menu_options) do
+        if i == selected_option then
+            print("-> " .. option, 60, 60 + i * 10, 7)
+        else
+            print("   " .. option, 60, 60 + i * 10, 7)
+        end
+    end
+end
+
+function draw_exit_screen()
+    print("Auf Wiedersehen!", 60, 60, 7)
+end
+
+
+-- Game-Code
 sprites = {}
 spawn_timer = 0
 spawn_interval = 2
 sprite_falling_speed = 1
 
-function _draw()
+function draw_game()
     cls()
     for sprite in all(sprites) do
         spr(sprite.sprite_id, sprite.x, sprite.y)
     end
 end
 
-function _update()
+function handle_game_input()
     spawn_timer += 1/15 -- 30 fps
     -- spawn_timer += 1/30 -- 60 fps
     if spawn_timer >= spawn_interval then
@@ -23,10 +92,6 @@ function _update()
     end
 
     update_sprite()
-end
-
-function _init()
-    -- Kann für Initialisierungen genutzt werden, falls nötig
 end
 
 function spawn_sprite()
@@ -45,6 +110,7 @@ function update_sprite()
         end
     end
 end
+
 
 __gfx__
 00066000000060000006600000060000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
