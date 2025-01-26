@@ -7,9 +7,10 @@ __lua__
 ------------------------------------------
 menu_options = {"start", "exit"}
 pause_menu_options = {"resume", "exit"}
-difficulty_menu_options = {"hard", "medium", "easy"}
+difficulty_menu_options = {"hard", "medium", "easy", "back"}
 selected_option = 1
 current_state = "menu"
+timer = 0
 
 function _init()
     current_state = "menu"
@@ -50,15 +51,9 @@ end
 
 function handle_menu_input(menu_type)
     if btnp(2) then -- up
-        selected_option -= 1
-        if selected_option < 1 then
-            selected_option = #menu_type
-        end
+        selected_option = (selected_option - 2) % #menu_type + 1
     elseif btnp(3) then -- down
-        selected_option += 1
-        if selected_option > #menu_type then
-            selected_option = 1
-        end
+        selected_option = selected_option % #menu_type + 1
     elseif btnp(5) then -- enter
         if current_state == "menu" then
             if selected_option == 1 then
@@ -67,15 +62,11 @@ function handle_menu_input(menu_type)
                 current_state = "exit"
             end
         elseif current_state == "difficulty_menu" then
-            if selected_option == 1 then
-                difficulty_state = "hard"
+            if selected_option <= 3 then
+                difficulty_state = menu_type[selected_option]
                 current_state = "game"
-            elseif selected_option == 2 then
-                difficulty_state = "medium"
-                current_state = "game"
-            elseif selected_option == 3 then
-                difficulty_state = "easy"
-                current_state = "game"
+            elseif selected_option == 4 then
+                current_state = "menu"
             end
         elseif current_state == "pause_menu" then
             if selected_option == 1 then
@@ -90,30 +81,30 @@ end
 function menu_loop(menu_type)
     for i, option in ipairs(menu_type) do
         if i == selected_option then
-            print("-> " .. option, 60, 60 + i * 10, 7)
+            print("-> " .. option, 30, 60 + i * 10, 7)
         else
-            print("   " .. option, 60, 60 + i * 10, 7)
+            print("   " .. option, 30, 60 + i * 10, 7)
         end
     end
 end
 
 function draw_menu()
-    print("Hauptmenue", 60, 40, 7)
+    print("hauptmenue", 30, 40, 7)
     menu_loop(menu_options)
 end
 
 function draw_difficulty_menu()
-    print("Schwierigkeitsgrad", 60, 40, 7)
+    print("schwierigkeitsgrad", 30, 40, 7)
     menu_loop(difficulty_menu_options)
 end
 
 function draw_pause_menu()
-    print("Pause", 60, 40, 7)
+    print("pause", 30, 40, 7)
     menu_loop(pause_menu_options)
 end
 
 function draw_exit_screen()
-    print("Auf Wiedersehen!", 60, 60, 7)
+    print("auf wiedersehen!", 30, 60, 7)
 end
 
 
@@ -145,6 +136,8 @@ function draw_game()
     end
 
     spr(cheer_anim_frames)
+    line(0, 16, 128, 16, 7)
+    draw_timer()
     show_score()
     show_feedback()
 end
@@ -168,6 +161,7 @@ function update_game()
         spawn_timer = 0
     end
 
+    update_timer()
     update_sprite()
     check_input()
     update_cheerleader_animation()
@@ -175,8 +169,17 @@ end
 
 function spawn_sprite()
     local sprite_id = flr(rnd(4)) -- IDs 0 bis 3
-    local x = 64 -- feste X-Position
-    local y = -8 -- Start れもber dem Bildschirm
+    local x;
+    if sprite_id == 0 then
+        x = 22
+    elseif sprite_id == 1 then
+        x = 43
+    elseif sprite_id == 2 then
+        x = 64
+    elseif sprite_id == 3 then
+        x = 85
+    end
+    local y = 16 -- Start れもber dem Bildschirm
     add(sprites, {sprite_id = sprite_id, x = x, y = y})
     arrows_spawned += 1
 end
@@ -308,6 +311,14 @@ function show_score()
     print(s_y, w_x + w_slash, 0)
 end
 
+function draw_timer()
+    print("time: " ..flr(timer), 0, 8, 7)
+end
+
+function update_timer()
+    timer += 1/30
+end
+
 function show_feedback()
     -- text oben rechts in regenbogenfarben
     if feedback_msg == "" then
@@ -330,6 +341,10 @@ function rainbow_print(txt, x, y)
         print(sub(txt,i,i), x + (i-1)*4, y)
     end
 end
+
+------------------------------------------
+--           Sprites / Sounds           --
+------------------------------------------
 
 __gfx__
 00066000000060000006600000060000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
