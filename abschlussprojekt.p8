@@ -5,56 +5,61 @@ __lua__
 ------------------------------------------
 --               Menues                 --
 ------------------------------------------
+-- Hauptmenue-Optionen
 menu_options = {"start", "exit"}
+
+-- Pausemenue-Optionen
 pause_menu_options = {"resume", "exit"}
+
+-- Schwierigkeitsgrad-Optionen
 difficulty_menu_options = {"hard", "medium", "easy", "back"}
-selected_option = 1
-current_state = "menu"
+
+-- Spiel-Timer
 timer = 0
 
+-- Initialisierung des Spiels
 function _init()
-    current_state = "menu"
-    selected_option = 1
-    if current_state == "game" then
-        create_cheerleader_frames()
-    end
+    current_state = "menu"                              -- Starte im Hauptmenue
+    selected_option = 1                                 -- Starte mit erster Option ausgewaehlt
 end
 
+-- Haupt-Loop
+-- Hier wird je nach aktuellem Zustand des Spiels die entsprechende Funktion aufgerufen
 function _update()
     if current_state == "menu" then
-        handle_menu_input(menu_options)
+        handle_menu_input(menu_options)                 -- Input im Hauptmenue
     elseif current_state == "difficulty_menu" then
-        handle_menu_input(difficulty_menu_options)
-    elseif current_state == "pause_menu" then
-        handle_menu_input(pause_menu_options)
+        handle_menu_input(difficulty_menu_options)      -- Input im Schwierigkeitsgradmenue
+    elseif current_state == "pause_menu" then       
+        handle_menu_input(pause_menu_options)           -- Input im Pausemenue
     elseif current_state == "game" then
-        update_game()
+        update_game()                                   -- Update des Spiels
     elseif current_state == "exit" then
         -- Kein Input im Exit-Screen
     end
 end    
 
 function _draw()
-    cls()
-    if current_state == "menu" then
-        draw_menu()
+    cls()                                               -- Bildschirm loeschen
+    if current_state == "menu" then         
+        draw_menu()                                     -- Hauptmenue zeichnen, falls Status "menu"
     elseif current_state == "difficulty_menu" then
-        draw_difficulty_menu()
+        draw_difficulty_menu()                          -- Schwierigkeitsgradmenue zeichnen, falls Status "difficulty_menu"
     elseif current_state == "pause_menu" then
-        draw_pause_menu()
+        draw_pause_menu()                               -- Pausemenue zeichnen, falls Status "pause_menu"
     elseif current_state == "game" then
-        draw_game()
+        draw_game()                                     -- Spiel zeichnen, falls Status "game"
     elseif current_state == "exit" then
-        draw_exit_screen()
+        draw_exit_screen()                              -- Exit-Screen zeichnen, falls Status "exit"
     end
 end
 
 function handle_menu_input(menu_type)
-    if btnp(2) then -- up
+    if btnp(2) then                                     -- up
         selected_option = (selected_option - 2) % #menu_type + 1
-    elseif btnp(3) then -- down
+    elseif btnp(3) then                                 -- down
         selected_option = selected_option % #menu_type + 1
-    elseif btnp(5) then -- enter
+    elseif btnp(5) then                                 -- enter
         if current_state == "menu" then
             if selected_option == 1 then
                 current_state = "difficulty_menu"
@@ -140,6 +145,7 @@ function draw_game()
     draw_timer()
     show_score()
     show_feedback()
+    create_cheerleader_frames()
 end
 
 function update_game()
@@ -274,9 +280,9 @@ function create_cheerleader_frames()
     }
 
     -- sprite #4: x=32..39, y=0..7
-    draw_sprite_in_sheet(cheer1, 32, 0, cmap)
+    draw_sprite_in_sheet(cheer1, 32, 100, cmap)
     -- sprite #5: x=40..47, y=0..7
-    draw_sprite_in_sheet(cheer2, 40, 0, cmap)
+    draw_sprite_in_sheet(cheer2, 40, 100, cmap)
 end
 
 function draw_sprite_in_sheet(lines, sx, sy, colormap)
