@@ -383,6 +383,7 @@ function reset_game()
     feedback_msg = ""                                   -- Setze Feedback-Nachricht zurueck
     cheer_anim_counter = 0                              -- Setze Animationszaehler fuer Cheerleader zurueck
     sprites = {}                                        -- Loescht alle Pfeile aus dem Array
+    score = 0                                           -- Setze Punktestand zurueck
 end
 
 ------------------------------------------
