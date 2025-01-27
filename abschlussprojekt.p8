@@ -86,6 +86,7 @@ function handle_menu_input(menu_type)
                 current_state = "game"
             elseif selected_option == 2 then
                 current_state = "menu"
+                reset_game()
             elseif selected_option == 3 then
                 current_state = "exit"
             end
@@ -354,6 +355,17 @@ function rainbow_print(txt, x, y)
         color(cols[(i-1)%ncols+1])                      -- Setze Farbe auf i-tes Element der Farbenliste
         print(sub(txt,i,i), x + (i-1)*4, y)             -- Zeichne i-tes Zeichen des Textes
     end
+end
+
+-- Funktion, die Spiel zuruecksetzt
+-- Wird aufgerufen, wenn Spieler aus dem Pausemenue ins Hauptmenue wechselt
+function reset_game()
+    timer = 0                                           -- Setze Timer zurueck
+    correct_count = 0                                   -- Setze Anzahl korrekt getroffener Pfeile zurueck
+    arrows_spawned = 0                                  -- Setze Anzahl gespawnter Pfeile zurueck
+    feedback_msg = ""                                   -- Setze Feedback-Nachricht zurueck
+    cheer_anim_counter = 0                              -- Setze Animationszaehler fuer Cheerleader zurueck
+    sprites = {}                                        -- Loescht alle Pfeile aus dem Array
 end
 
 ------------------------------------------
