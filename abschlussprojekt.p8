@@ -186,6 +186,9 @@ function draw_game()
     end
 
     line(0, 16, 128, 16, 7)                             -- Linie am oberen Bildschirmrand, grenzt "UI" von Spielfeld ab
+    line(0, 127, 128, 127, 7)                           -- Linie am unteren Bildschirmrand
+    line(0, 16, 0, 127, 7)                              -- Linie, die die beiden Linien auf der linken Seite verbindet
+    line(127, 16, 127, 127, 7)                          -- Linie, die die beiden Linien auf der rechten Seite verbindet
     draw_score()                                        -- Zeige Score oben links
     draw_timer()                                        -- Zeichne Timer oben links
     draw_feedback()                                     -- Zeige Feedback-Nachricht oben rechts
@@ -232,10 +235,10 @@ end
 -- "Animiert" eine Bewegung der Cheerleader durch Sprite-Wechsel alle 30 Frames
 function draw_cheerleader()
     if cheer_anim_counter % 30 < 15 then                -- Falls Animationszaehler kleiner als 15, zeichne Cheerleader-Sprite 1
-        spr(4, 0, 96)                                   -- Cheerleader linke Seite
+        spr(4, 1, 96)                                   -- Cheerleader linke Seite
         spr(4, 118, 96)                                 -- Cheerleader rechte Seite
     else                                                -- Ansonsten zeichne Cheerleader-Sprite 2
-        spr(5, 0, 96)                                   -- Cheerleader linke Seite
+        spr(5, 1, 96)                                   -- Cheerleader linke Seite
         spr(5, 118, 96)                                 -- Cheerleader rechte Seite
     end
 end
@@ -276,7 +279,7 @@ function update_sprite()
         local sprite = sprites[i]                       -- Aktueller Pfeil
         sprite.y += sprite_falling_speed                -- Pfeil nach unten bewegen
         if sprite.y > 128 then                          -- Check, ob Pfeil unteren Bildschirmrand erreicht
-            feedback_msg = "you suck"                   -- Wenn ja, schlechte Feedback-Nachricht und Pfeil aus Array entfernen
+            feedback_msg = "missed!"                    -- Wenn ja, schlechte Feedback-Nachricht und Pfeil aus Array entfernen
             del(sprites, sprite)
         end
     end
@@ -301,13 +304,13 @@ function spawn_sprite()
     local sprite_id = flr(rnd(4))                       -- IDs 0 bis 3, zufaelliger Pfeil
     local x;                                            -- x-Koordinate des Pfeils, abhaengig von ID
     if sprite_id == 0 then                              
-        x = 22                                          -- x-Koordinate fuer Pfeil-ID 0, Pfeil nach unten
+        x = 30                                          -- x-Koordinate fuer Pfeil-ID 0, Pfeil nach unten
     elseif sprite_id == 1 then
-        x = 43                                          -- x-Koordinate fuer Pfeil-ID 1, Pfeil nach rechts
+        x = 52                                          -- x-Koordinate fuer Pfeil-ID 1, Pfeil nach rechts
     elseif sprite_id == 2 then
-        x = 64                                          -- x-Koordinate fuer Pfeil-ID 2, Pfeil nach oben
+        x = 76                                          -- x-Koordinate fuer Pfeil-ID 2, Pfeil nach oben
     elseif sprite_id == 3 then
-        x = 85                                          -- x-Koordinate fuer Pfeil-ID 3, Pfeil nach links
+        x = 98                                          -- x-Koordinate fuer Pfeil-ID 3, Pfeil nach links
     end
     local y = 16                                        -- Start an oberer Abgrenzungslinie
     add(sprites, {sprite_id = sprite_id, x = x, y = y}) -- Hinzufuegen des neuen Pfeils zum Array
