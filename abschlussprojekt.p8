@@ -153,6 +153,9 @@ sprite_falling_speed = 1
 -- Anzahl korrekt getroffener Pfeile
 correct_count = 0
 
+-- Punktestand
+score = 0
+
 -- Anzahl gespawnter Pfeile
 arrows_spawned = 0
 
@@ -189,14 +192,15 @@ function draw_game()
     line(0, 127, 128, 127, 7)                           -- Linie am unteren Bildschirmrand
     line(0, 16, 0, 127, 7)                              -- Linie, die die beiden Linien auf der linken Seite verbindet
     line(127, 16, 127, 127, 7)                          -- Linie, die die beiden Linien auf der rechten Seite verbindet
-    draw_score()                                        -- Zeige Score oben links
+    draw_correct_hits()                                 -- Zeige korrekt getroffene Pfeile oben links
     draw_timer()                                        -- Zeichne Timer oben links
     draw_feedback()                                     -- Zeige Feedback-Nachricht oben rechts
+    draw_score()                                        -- Zeige Score oben rechts unter Feedback-Nachricht
     draw_cheerleader()                                  -- Zeichne Cheerleader auf Hitzone-Linie                
 end
 
--- Funktion, die Score anzeigt
-function draw_score()
+-- Funktion, die korrekten Treffer anzeigt
+function draw_correct_hits()
     -- x = correct_count (gruen = 11) / (blau=12)
     -- y = arrows_spawned (weiß = 7)
 
@@ -229,6 +233,14 @@ function draw_feedback()
     local x = 128 - text_width - 2                      -- x-Koordinate der Nachricht
     local y = 0                                         -- y-Koordinate der Nachricht
     rainbow_print(msg, x, y)                            -- Zeige Nachricht in Regenbogenfarben rechts oben
+end
+
+function draw_score()
+    local score_text = "score: " .. score               -- Punktestand als String
+    local text_width = #score_text * 4                  -- Breite des Strings in Pixeln
+    local x = 128 - text_width - 2                      -- x-Koordinate des Punktestands
+    local y = 8                                         -- y-Koordinate des Punktestands, unter Feedback-Nachricht
+    print(score_text, x, y, 7)                          -- Zeige Punktestand rechts oben unter Feedback-Nachricht
 end
 
 -- Funktion, die Cheerleader zeichnet
@@ -343,9 +355,11 @@ function hit_feedback(sprite)
     correct_count += 1                                  -- Erhoehe Anzahl korrekt getroffener Pfeile
     local dist = abs(sprite.y - hit_zone_y)             -- Distanz des Pfeils zur Hit-Zone ermitteln
     if dist < well_done_threshold then                  -- Check, ob Distanz kleiner als Toleranz fuer "well done" Feedback
-        feedback_msg = "well done!"                     -- Falls ja, "well done" Feedback        
+        feedback_msg = "well done!"                     -- Falls ja, "well done" Feedback   
+        score += 200                                    -- Erhoehe Punktestand um 200   
     else
         feedback_msg = "good"                           -- Ansonsten "good" Feedback
+        score += 100                                    -- Erhoehe Punktestand um 100
     end
     del(sprites, sprite)                                -- Pfeil aus Array entfernen
 end
