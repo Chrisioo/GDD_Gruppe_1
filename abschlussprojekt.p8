@@ -97,6 +97,11 @@ end
 -- Funktion für Menue-Loop
 -- Gibt die Menue-Optionen des uebergebenen Menue-Typs aus und markiert die ausgewaehlte Option
 function menu_loop(menu_type)
+    local x = 28
+    local y = 58
+    local width = 64
+    local height = #menu_type * 10 + 20
+    rect(x, y, x + width, y + height, 7)                -- Zeichne Rechteck um die Menue-Optionen
     for i, option in ipairs(menu_type) do               -- Schleife ueber alle Menue-Optionen
         if i == selected_option then
             print("-> " .. option, 30, 60 + i * 10, 7)  -- Wenn Option ausgewaehlt, dann mit Pfeil ausgeben
@@ -188,15 +193,17 @@ function draw_game()
         spr(sprite.sprite_id, sprite.x, sprite.y)       -- Zeichne Pfeil am oberen Bildschirm
     end
 
-    line(0, 16, 128, 16, 7)                             -- Linie am oberen Bildschirmrand, grenzt "UI" von Spielfeld ab
-    line(0, 127, 128, 127, 7)                           -- Linie am unteren Bildschirmrand
-    line(0, 16, 0, 127, 7)                              -- Linie, die die beiden Linien auf der linken Seite verbindet
-    line(127, 16, 127, 127, 7)                          -- Linie, die die beiden Linien auf der rechten Seite verbindet
+    draw_borders()                                      -- Zeichne Abgrenzungslinien
     draw_correct_hits()                                 -- Zeige korrekt getroffene Pfeile oben links
     draw_timer()                                        -- Zeichne Timer oben links
     draw_feedback()                                     -- Zeige Feedback-Nachricht oben rechts
     draw_score()                                        -- Zeige Score oben rechts unter Feedback-Nachricht
     draw_cheerleader()                                  -- Zeichne Cheerleader auf Hitzone-Linie                
+end
+
+-- Funktion, die Abgrenzungslinien zeichnet
+function draw_borders()
+    rect(0, 16, 127, 127, 7)                            -- Zeichne Rechteck um das Spielfeld
 end
 
 -- Funktion, die korrekten Treffer anzeigt
