@@ -14,7 +14,7 @@ __lua__
 menu_options = {"start", "exit"}
 
 -- Pausemenue-Optionen
-pause_menu_options = {"resume", "hauptmenue", "exit"}
+pause_menu_options = {"resume", "main menu", "exit"}
 
 -- Schwierigkeitsgrad-Optionen
 difficulty_menu_options = {"hard", "medium", "easy", "back"}
