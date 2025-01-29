@@ -80,6 +80,7 @@ function handle_menu_input(menu_type)
                 current_state = "game"
             elseif selected_option == 4 then
                 current_state = "menu"
+                selected_option = 1
             end
         elseif current_state == "pause_menu" then
             if selected_option == 1 then
@@ -113,13 +114,13 @@ end
 
 -- Zeichnet Hauptmenue
 function draw_menu()
-    print("hauptmenue", 30, 40, 7)
+    print("main menu", 30, 40, 7)
     menu_loop(menu_options)                             -- Hauptmenue-Loop
 end
 
 -- Zeichnet Schwierigkeitsgradmenue
 function draw_difficulty_menu()
-    print("schwierigkeitsgrad", 30, 40, 7)
+    print("difficulty menu", 30, 40, 7)
     menu_loop(difficulty_menu_options)                  -- Schwierigkeitsgradmenue-Loop
 end
 
@@ -131,7 +132,7 @@ end
 
 -- Zeichnet Exit-Screen
 function draw_exit_screen()
-    print("auf wiedersehen!", 30, 60, 7)                
+    print("see you soon!", 30, 60, 7)                
 end
 
 
@@ -271,6 +272,7 @@ function update_game()
 
     if btnp(5) then
         current_state = "pause_menu"                    -- Pausemenue aufrufen, falls Enter gedrueckt
+        selected_option = 1
     end
     if difficulty_state == "hard" then
         spawn_frames = 8                                -- Schwierigkeitsgrad "hard", spawnt neuen Pfeil alle 8 Frames
