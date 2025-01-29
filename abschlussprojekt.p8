@@ -188,7 +188,7 @@ cheer_anim_counter = 0
 -- Funktion, die Spiel zeichnet
 function draw_game()
     cls()                                               -- Bildschirm loeschen
-    line(0, hit_zone_y + 4, 128, hit_zone_y + 4, 7)     -- Zeichne Hit-Zone, bestehehend aus Linie und Tolernazzone
+    line(0, hit_zone_y + 4, 128, hit_zone_y + 4, 11)     -- Zeichne Hit-Zone, bestehehend aus Linie und Tolernazzone
                                                         -- Pfeile muessen in dieser Zone getroffen vom Spieler getroffen werden
     for sprite in all(sprites) do                       -- Schleife ueber alle Pfeile
         spr(sprite.sprite_id, sprite.x, sprite.y)       -- Zeichne Pfeil am oberen Bildschirm
